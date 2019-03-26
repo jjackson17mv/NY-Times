@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>New York Times</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script src="assets/javascript/main.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        
+        <div class="jumbotron text-center" id="background" style="background-color:slateblue">
+            
+            <strong><p style="color: whitesmoke"> NEW YORK TIMES SEARCH</p></strong>
+        </div>
+
+        <div class="card">
+            <h3 class="card-header">Search Parameters</h3>
+            
+         <div class="form">
+
+            <div class="form-group">
+                <label for="exampleinput1">Search term:</label>
+                <input type="search" class="form-control" id="query" placeholder="elections">
+            </div>
+
+                <div class="form-group">
+                <label for="exampleinput2">Number of records to retrieve:</label>
+                <select class="form-control" id="page-num">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                </div>
+
+                <div class="form-group">
+                <label for="exampleinput3">Begin Date:</label>
+                <input type="email" class="form-control" id="begin-date" value = "2019"placeholder="2019">
+                </div>
+
+                <div class="form-group">
+                <label for="exampleinput4">End Date:</label>
+                <input type="email" class="form-control" id="end-date" value="2020" placeholder="2020">
+                </div>
+
+                <button type="button" class="btn btn-primary" id="button">Search</button>
+                <button type="button" class="btn btn-primary" id="clear">Clear Results</button>
+                
+            </div>
+
+        
+             </div>
+            </form>
+
+            <br>
+            
+
+            <div class="card">
+            <h3 class="card-header">Top Articles</h3>
+            
+            <div class="card-body" id="resultArea">
+
+
+            </div>
+
+            </div>
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        </div>
+    </div>
+    
+
+
+
+<Script>
+
+$('#button').on('click',function()
+{
+
+var beginDate = $('#begin-date').val()+"0101"
+    var endDate = $('#end-date').val()+"1231"
+    var pageNum = $('#page-num').val()
+    var query = $('#query').val()
+
+    //var beginDate = "20100101"
+    //var endDate = "20120101"
+    //var pageNum = "5"
+    //var query = "election"
+
+
+    var queryURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + beginDate + '&end_date=' + endDate + '&facet=false&fq=New%20York%20Times&page=' + pageNum + '&q=' + query + '&api-key=uMl5A64Zy1N5eJZ3QGZPhG6g7aHrat8T'
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response) {
+            
+            console.log(response)
+            for(i = 0; i < pageNum; i++) {
+                var headline = response.response.docs[i].headline.main
+                var webUrl = response.response.docs[i].web_url 
+                ////var image = response.response.docs[i].multimedia[0].url.response.docs[0].web_url
+
+                var snippet = response.response.docs[i].snippet
+
+                console.log("head",headline)
+               // console.log("img",image)
+                console.log("sum",snippet)
+                console.log("url",webUrl)
+
+                var article = $('<div>')
+               // var picture = $('<img>')
+                var title = $('<p>')
+                var summary = $('<p>')
+                var link = $('<a>')
+
+               // picture.attr('src', 'https://static01.nyt.com/' + image)
+                //picture.attr('alt', 'article image')
+                title.text(headline);
+                summary.text(snippet)
+                link.attr('href', webUrl)
+                link.text(webUrl);
+                article/*.append(picture)*/.append(title).append(summary).append(link)
+                $("#resultArea").append(article)
+
+
+        
+
+
+            }
+
+
+
+
+        })
+    })
+    
+
+$('#clear').on('click',function()
+{
+    var resultPost = document.getElementById("resultArea");
+    while (resultPost.firstChild) {
+        resultPost.removeChild(resultPost.firstChild)
+    }
+
+
+
+    
+
+})
+
+
+
+</Script>
+
+
+
+</body>
+</html>
